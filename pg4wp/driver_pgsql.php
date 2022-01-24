@@ -434,6 +434,11 @@ function pg4wp_rewrite($sql)
         $pattern = '/LIMIT[ ]+\d+/';
         $sql = preg_replace($pattern, '', $sql);
 
+        // Fix update wp_options
+        $pattern = "/UPDATE `wp_options` SET `option_value` = NULL WHERE `option_name` = '(.+)'/";
+        $match = "update `wp_options` set `option_value` = '' where `option_name` = '$1'";
+        $sql = preg_replace($pattern, $match, $sql);
+
         // For correct bactick removal
         $pattern = '/[ ]*`([^` ]+)`[ ]*=/';
         $sql = preg_replace($pattern, ' $1 =', $sql);
@@ -519,7 +524,10 @@ function pg4wp_rewrite($sql)
             // Note:  Requires PostgreSQL 9.0 and USAGE privilege.
             // Could do query-specific rewrite using SELECT without FROM
             // as in http://stackoverflow.com/a/13342031
-            $sql = 'DO $$BEGIN INSERT' . substr($sql, 13) . '; EXCEPTION WHEN unique_violation THEN END;$$;';
+            //$sql = 'DO $$BEGIN INSERT' . substr($sql, 13) . '; EXCEPTION WHEN unique_violation THEN END;$$;';
+
+            // Note:  Requires PostgreSQL 9.5
+            $sql = 'INSERT'.substr($sql, 13).' ON CONFLICT DO NOTHING';
         }
 
         // To avoid Encoding errors when inserting data coming from outside
@@ -626,6 +634,10 @@ WHERE ' . $where : '') . ';';
     // WP 2.9.1 uses a comparison where text data is not quoted
     $pattern = '/AND meta_value = (-?\d+)/';
     $sql = preg_replace($pattern, 'AND meta_value = \'$1\'', $sql);
+
+    // Add type cast for meta_value field when it's compared to number
+    $pattern = '/AND meta_value < (\d+)/';
+    $sql = preg_replace($pattern, 'AND meta_value::bigint < $1', $sql);
 
     // Generic "INTERVAL xx YEAR|MONTH|DAY|HOUR|MINUTE|SECOND" handler
     $pattern = '/INTERVAL[ ]+(\d+)[ ]+(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)/';
