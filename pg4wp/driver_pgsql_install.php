@@ -13,7 +13,9 @@
 	$GLOBALS['pg4wp_ttr'] = array(
 		'bigint(20)'	=> 'bigint',
 		'bigint(10)'	=> 'int',
+		'BIGINT UNSIGNED'	=> 'bigint',
 		'int(11)'		=> 'int',
+		'INT (11)'		=> 'int',
 		'tinytext'		=> 'text',
 		'mediumtext'	=> 'text',
 		'longtext'		=> 'text',
@@ -24,14 +26,21 @@
 		'datetime'		=> 'timestamp',
 		'DEFAULT CHARACTER SET utf8'	=> '',
 		
-		// WP 2.7.1 compatibility
-		'int(4)'		=> 'smallint',
-		
 		// For WPMU (starting with WP 3.2)
 		'tinyint(2)'	=> 'smallint',
 		'tinyint(1)'	=> 'smallint',
+		'decimal(10,2)'	=> 'numeric',
+		'decimal(3,2)'	=> 'numeric',
+		'decimal(3,2)'	=> 'numeric',
+		'double'	=> 'numeric',
 		"enum('0','1')"	=> 'smallint',
 		'COLLATE utf8_general_ci'	=> '',
+
+		// WP 2.7.1 compatibility
+		'int(1)'		=> 'smallint',
+		'smallint(4)'		=> 'smallint',
+		'smallint(10)'		=> 'smallint',
+		'int(4)'		=> 'smallint',
 
 		// For flash-album-gallery plugin
 		'tinyint'		=> 'smallint',
@@ -147,7 +156,7 @@ WHERE '.$where : '').';';
 				if( !empty($default))
 					$newq .= ", ALTER COLUMN $col SET DEFAULT $defval";
 				if( $col != $newname)
-					$newq .= ";ALTER TABLE $table RENAME COLUMN $col TO $newcol;";
+					$newq .= ";ALTER TABLE $table RENAME COLUMN $col TO $newname;";
 				$sql = $newq;
 			}
 			$pattern = '/ALTER TABLE\s+(\w+)\s+ALTER COLUMN\s+/';
@@ -246,10 +255,15 @@ WHERE pg_class.relname='$table_name' AND pg_attribute.attnum>=1 AND NOT pg_attri
 		{
 			$logto = 'CREATE';
 			$sql = str_replace( 'CREATE TABLE IF NOT EXISTS ', 'CREATE TABLE ', $sql);
+                        $sql = str_replace( 'boolean DEFAULT 0 NOT NULL', "boolean DEFAULT 'f' NOT NULL", $sql);
+                        $sql = str_replace( 'BOOLEAN NOT NULL DEFAULT 0', "BOOLEAN NOT NULL DEFAULT 'f'", $sql);
 			$pattern = '/CREATE TABLE [`]?(\w+)[`]?/';
 			preg_match($pattern, $sql, $matches);
 			$table = $matches[1];
-			
+			$sql = str_replace( "`virtual`", '`virtual1`', $sql);
+			// Remove illegal characters
+			$sql = str_replace('`, `', '`,`', $sql);
+			$sql = str_replace('`', '', $sql);
 			// Remove trailing spaces
 			$sql = trim( $sql).';';
 			
@@ -267,6 +281,16 @@ WHERE pg_class.relname='$table_name' AND pg_attribute.attnum>=1 AND NOT pg_attri
 				$sql .= "\nCREATE SEQUENCE $seq;";
 			}
 			
+			// Fix auto_increment by adding a sequence
+			$pattern = '/bigint NOT NULL AUTO_INCREMENT/';
+			preg_match($pattern, $sql, $matches);
+			if($matches)
+			{
+				$seq = $table . '_seq';
+				$sql = str_replace( 'NOT NULL AUTO_INCREMENT', "NOT NULL DEFAULT nextval('$seq'::text)", $sql);
+				$sql .= "\nCREATE SEQUENCE $seq;";
+			}
+			
 			// Support for INDEX creation
 			$pattern = '/,\s+(UNIQUE |)KEY\s+([^\s]+)\s+\(((?:[\w]+(?:\([\d]+\))?[,]?)*)\)/';
 			if( preg_match_all( $pattern, $sql, $matches, PREG_SET_ORDER))
@@ -277,6 +301,8 @@ WHERE pg_class.relname='$table_name' AND pg_attribute.attnum>=1 AND NOT pg_attri
 					$columns = $match[3];
 					$columns = preg_replace( '/\(\d+\)/', '', $columns);
 					// Workaround for index name duplicate
+                    $index = str_replace( 'download_order_key_product', "d_o_key_p", $index);
+                    $index = str_replace( 'download_order_product', "d_o_p", $index);
 					$index = $table.'_'.$index;
 					$sql .= "\nCREATE {$unique}INDEX $index ON $table ($columns);";
 				}
