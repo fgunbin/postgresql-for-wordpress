@@ -4,12 +4,15 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: database, postgresql, PostgreSQL, postgres, mysql
 Requires at least: 2.9.2
 Tested up to: 4.5.3
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 
 PostgreSQL for WordPress is a special 'plugin' enabling WordPress to be used with a PostgreSQL database.
 
 == Description ==
+
+** use wordpress4-compat branch **
+Tested on php8, postgreSQL 12.2, WP 5.8.3
 
 PostgreSQL for WordPress (PG4WP) gives you the possibility to install and use WordPress with a PostgreSQL database as a backend.
 It works by replacing calls to MySQL specific functions with generic calls that maps them to another database functions and rewriting SQL queries on the fly when needed.
@@ -67,6 +70,8 @@ Whether it worked or not, you should tell me the result of your test, so that I 
 There is no screenshot for this plugin
 
 == Changelog ==
+
+= 1.3.2 =
 
 = 1.3.1 =
 * Integrated changes pointed in http://vitoriodelage.wordpress.com/2014/06/06/add-missing-wpsql_errno-in-pg4wp-plugin/ to correct problems with WP 3.9.1
