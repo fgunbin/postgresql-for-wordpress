@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: database, postgresql, PostgreSQL, postgres, mysql
 Requires at least: 2.9.2
 Tested up to: 5.8.3
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 
 PostgreSQL for WordPress is a special 'plugin' enabling WordPress to be used with a PostgreSQL database.
@@ -35,18 +35,18 @@ This is because the database needs to be up and running before any plugin can be
 
 1.  Place your WordPress files in the right place on your web server.
 
-1.	Unzip the files from PG4WP and put the `pg4wp` directory in your `/wp-content` directory.
+1.1	Unzip the files from PG4WP and put the `pg4wp` directory in your `/wp-content` directory.
 
-1.	Copy the `db.php` from the `pg4wp` directory to `wp-content`
+1.2	Copy the `db.php` from the `pg4wp` directory to `wp-content`
 	
 	You can modify this file to configure the database driver you wish to use
 	Currently you can set 'DB_DRIVER' to 'pgsql' or 'mysql'
 	
 	You can also activate DEBUG and/or ERROR logs
 
-1.	Create `wp-config.php` from `wp-config-sample.php` if it does not already exist (PG4WP does not currently intercept database connection setup).
+1.3	Create `wp-config.php` from `wp-config-sample.php` if it does not already exist (PG4WP does not currently intercept database connection setup).
 
-1.	Point your Web Browser to your WordPress installation and go through the traditional WordPress installation routine.
+1.4	Point your Web Browser to your WordPress installation and go through the traditional WordPress installation routine. ({url}/wp-admin/install.php)
 
 == Frequently Asked Questions ==
 
@@ -70,8 +70,12 @@ Whether it worked or not, you should tell me the result of your test, so that I 
 There is no screenshot for this plugin
 
 == Changelog ==
+= 1.3.3 =
+* Added fixes from pull requests in fork
 
 = 1.3.2 =
+* Added fixes from Heroku repository
+* Added fixes for php8
 
 = 1.3.1 =
 * Integrated changes pointed in http://vitoriodelage.wordpress.com/2014/06/06/add-missing-wpsql_errno-in-pg4wp-plugin/ to correct problems with WP 3.9.1
