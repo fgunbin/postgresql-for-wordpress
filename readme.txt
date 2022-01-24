@@ -1,13 +1,13 @@
 === PostgreSQL for WordPress (PG4WP) ===
 Contributors: Hawk__ (http://www.hawkix.net/)
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FPT8RPZGFX7GU
-Tags: database, postgresql, PostgreSQL, postgres, mysql
+Tags: database, postgresql, PostgreSQL, postgres, mysql, php8
 Requires at least: 2.9.2
 Tested up to: 5.8.3
 Stable tag: 1.3.3
 License: GPLv2 or later
 
 PostgreSQL for WordPress is a special 'plugin' enabling WordPress to be used with a PostgreSQL database.
+
 
 == Description ==
 
@@ -27,6 +27,7 @@ If you want to use this plugin, you should be aware of the following :
 
 You shouldn't expect any plugin specific code to be integrated into PG4WP except for plugins shipped with WordPress itself (such as Akismet).
 PG4WP 2.0 will have a mechanism to add plugin support.
+
 
 == Installation ==
 
@@ -48,6 +49,7 @@ This is because the database needs to be up and running before any plugin can be
 
 1.4	Point your Web Browser to your WordPress installation and go through the traditional WordPress installation routine. ({url}/wp-admin/install.php)
 
+
 == Frequently Asked Questions ==
 
 = I have an error adding a new category =
@@ -66,8 +68,10 @@ Database-intensive plugins may work, but most of them would require specific cod
 You should backup your setup (at least database) and try to install the plugin to see if it works or not.
 Whether it worked or not, you should tell me the result of your test, so that I can create some kind of listing of working/not working plugins.
 
+
 == Screenshots ==
 There is no screenshot for this plugin
+
 
 == Changelog ==
 = 1.3.3 =
@@ -201,6 +205,7 @@ There is no screenshot for this plugin
 * Case insensitivity of MySQL 'LIKE' restored
 * Importing WordPress eXtended RSS tested and seems to work
 
+
 == Upgrade Notice ==
 
 = 1.2.0 =
@@ -210,6 +215,7 @@ Note : since 1.2.0b1, it is recommended to put the `pg4wp` directory directly in
 
 = 1.0 =
 Initial stable release, you should upgrade to this version if you have installed any older release
+
 
 == License ==
 PG4WP is provided "as-is" with no warranty in the hope it can be useful.
